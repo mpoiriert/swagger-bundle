@@ -31,6 +31,10 @@ class DrawSwaggerExtension extends Extension implements PrependExtensionInterfac
         $loader = new YamlFileLoader($container, $fileLocator);
         $loader->load('swagger.yml');
 
+        if(class_exists(\FOS\RestBundle\Routing\Loader\Reader\RestControllerReader::class)) {
+            $loader->load('fos_rest.yml');
+        }
+
         $definition = $container->getDefinition("draw.swagger.extrator.type_schema_extractor");
 
         foreach ($config['definitionAliases'] as $alias) {

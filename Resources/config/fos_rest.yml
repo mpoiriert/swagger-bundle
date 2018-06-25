@@ -1,0 +1,20 @@
+parameters:
+    draw.swagger.extrator.fos_rest_view_operation_extractor.class: Draw\SwaggerBundle\Extractor\FOSRestViewOperationExtractor
+    draw.swagger.extrator.fos_rest_route_operation_extractor.class: Draw\SwaggerBundle\Extractor\FOSRestRouteOperationExtractor
+
+services:
+
+    draw.swagger.extrator.fos_rest_view_operation_extractor:
+        class: '%draw.swagger.extrator.fos_rest_view_operation_extractor.class%'
+        arguments:
+            - '@annotation_reader'
+            - '@draw.serializer.group_hierarchy'
+        tags:
+            - {name: swagger.extractor}
+
+    draw.swagger.extrator.fos_rest_route_operation_extractor:
+        class: '%draw.swagger.extrator.fos_rest_route_operation_extractor.class%'
+        arguments:
+            - '@fos_rest.request.param_fetcher.reader'
+        tags:
+            - {name: swagger.extractor}
