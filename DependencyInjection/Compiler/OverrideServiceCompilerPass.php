@@ -23,7 +23,7 @@ class OverrideServiceCompilerPass implements CompilerPassInterface
             if($container->hasDefinition(\FOS\RestBundle\Routing\Loader\Reader\RestControllerReader::class)) {
                 $definition = $container->getDefinition(\FOS\RestBundle\Routing\Loader\Reader\RestControllerReader::class);
             } elseif($container->hasDefinition('fos_rest.routing.loader.reader.controller')) {
-                $definition = $container->getDefinition('fos_rest.routing.loader.reader.controller')
+                $definition = $container->getDefinition('fos_rest.routing.loader.reader.controller');
             }
             if(!is_null($definition)) {
                 $definition->setClass(RestControllerReader::class);
