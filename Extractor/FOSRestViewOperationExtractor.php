@@ -34,17 +34,17 @@ class FOSRestViewOperationExtractor implements ExtractorInterface
      * Return if the extractor can extract the requested data or not.
      *
      * @param $source
-     * @param $type
+     * @param $target
      * @param ExtractionContextInterface $extractionContext
      * @return boolean
      */
-    public function canExtract($source, $type, ExtractionContextInterface $extractionContext)
+    public function canExtract($source, $target, ExtractionContextInterface $extractionContext)
     {
-        if(!$source instanceof ReflectionMethod) {
+        if(!$target instanceof Schema) {
             return false;
         }
 
-        if(!$type instanceof Operation) {
+        if(!$extractionContext->hasParameter('controller-reflection-method')) {
             return false;
         }
 
@@ -58,12 +58,12 @@ class FOSRestViewOperationExtractor implements ExtractorInterface
      * extraction.
      *
      * @param \ReflectionMethod $source
-     * @param Operation $type
+     * @param Schema $target
      * @param ExtractionContextInterface $extractionContext
      */
-    public function extract($source, $type, ExtractionContextInterface $extractionContext)
+    public function extract($source, $target, ExtractionContextInterface $extractionContext)
     {
-        if (!$this->canExtract($source, $type, $extractionContext)) {
+        if (!$this->canExtract($source, $target, $extractionContext)) {
             throw new ExtractionImpossibleException();
         }
 
@@ -79,9 +79,9 @@ class FOSRestViewOperationExtractor implements ExtractorInterface
 
         $groups = $this->groupHierarchy->getReachableGroups($groups);
 
-        $modelContext = $extractionContext->getParameter('out-model-context', array());
+        $modelContext = $extractionContext->getParameter('model-context', []);
         $modelContext['serializer-groups'] = $groups;
-        $extractionContext->setParameter('out-model-context', $modelContext);
+        $extractionContext->setParameter('model-context', $modelContext);
     }
 
     /**

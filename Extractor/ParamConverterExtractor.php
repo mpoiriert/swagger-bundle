@@ -85,20 +85,17 @@ class ParamConverterExtractor implements ExtractorInterface
 
         $operation->parameters[] = $parameter = new BodyParameter();
 
-        $subContext = $extractionContext->createSubContext();
 
-        $subContext->setParameter('direction', 'in');
 
         if ($serializationGroups = $this->getDeserializationGroups($paramConverter)) {
             $serializationGroups = $this->groupHierarchy->getReachableGroups($serializationGroups);
         }
 
-        $subContext->setParameter(
-            'validation-groups',
-            $validationGroups = $this->getValidationGroups($paramConverter)
-        );
+        $validationGroups = $this->getValidationGroups($paramConverter);
 
-        $modelContext = $subContext->getParameter('in-model-context', array());
+
+        $subContext = $extractionContext->createSubContext();
+        $modelContext = $subContext->getParameter('model-context', []);
 
         if ($serializationGroups) {
             $modelContext['serializer-groups'] = $serializationGroups;
@@ -108,7 +105,7 @@ class ParamConverterExtractor implements ExtractorInterface
             $modelContext['validation-groups'] = $validationGroups;
         }
 
-        $subContext->setParameter('in-model-context', $modelContext);
+        $subContext->setParameter('model-context', $modelContext);
 
         $subContext->getSwagger()->extract(
             $type,
