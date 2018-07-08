@@ -2,10 +2,13 @@
 
 namespace Draw\SwaggerBundle\DependencyInjection;
 
+use Draw\Swagger\Extraction\Extractor\DoctrineInheritanceExtractor;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
+use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 
 class DrawSwaggerExtension extends Extension implements PrependExtensionInterface
@@ -44,6 +47,15 @@ class DrawSwaggerExtension extends Extension implements PrependExtensionInterfac
                 'registerDefinitionAlias',
                 [$alias['class'], $alias['alias']]
             );
+        }
+
+        if(class_exists(\Doctrine\ORM\EntityManager::class)) {
+            $container->setDefinition(
+                DoctrineInheritanceExtractor::class,
+                $definition = new Definition(DoctrineInheritanceExtractor::class, [new Reference('doctrine')])
+            );
+
+            $definition->addTag('swagger.extractor');
         }
     }
 
