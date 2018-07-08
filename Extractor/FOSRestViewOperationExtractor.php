@@ -7,7 +7,7 @@ use Draw\DrawBundle\Serializer\GroupHierarchy;
 use Draw\Swagger\Extraction\ExtractionContextInterface;
 use Draw\Swagger\Extraction\ExtractionImpossibleException;
 use Draw\Swagger\Extraction\ExtractorInterface;
-use Draw\Swagger\Schema\Operation;
+use Draw\Swagger\Schema\Schema;
 use FOS\RestBundle\Controller\Annotations\View;
 use JMS\Serializer\Exclusion\GroupsExclusionStrategy;
 use ReflectionMethod;
@@ -69,7 +69,7 @@ class FOSRestViewOperationExtractor implements ExtractorInterface
 
         $groups = array();
 
-        if($view = $this->getView($source)) {
+        if($view = $this->getView($extractionContext->getParameter('controller-reflection-method'))) {
             $groups = $view->getSerializerGroups();
         }
 
