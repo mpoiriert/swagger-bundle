@@ -77,7 +77,11 @@ class SymfonyContainerSwaggerExtractor implements ExtractorInterface
 
             list($class, $method) = $controller;
 
-            $reflectionMethod = new \ReflectionMethod($class, $method);
+            try {
+                $reflectionMethod = new \ReflectionMethod($class, $method);
+            } catch (\ReflectionException $exception) {
+                continue;
+            }
 
             if(!$this->isSwaggerRoute($route, $reflectionMethod)) {
                 continue;
