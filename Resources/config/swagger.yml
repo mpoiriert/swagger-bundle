@@ -103,6 +103,5 @@ services:
         class: '%draw.swagger.extractor.param_converter_extractor.class%'
         arguments:
             - '@annotations.reader'
-            - '@draw.serializer.group_hierarchy'
         tags:
             - {name: swagger.extractor}

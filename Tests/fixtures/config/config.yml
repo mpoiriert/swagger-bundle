@@ -11,6 +11,9 @@ fos_rest:
     body_converter:
         enabled: true
 
+draw:
+    use_doctrine_repository_factory: false
+
 draw_swagger:
     schema:
         info:

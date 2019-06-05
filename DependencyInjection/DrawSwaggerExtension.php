@@ -9,25 +9,17 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 use Symfony\Component\DependencyInjection\Reference;
-use Symfony\Component\HttpKernel\DependencyInjection\Extension;
+use Symfony\Component\HttpKernel\DependencyInjection\ConfigurableExtension;
 
-class DrawSwaggerExtension extends Extension
+class DrawSwaggerExtension extends ConfigurableExtension
 {
     /**
-     * Loads a specific configuration.
-     *
-     * @param array $config An array of configuration values
-     * @param ContainerBuilder $container A ContainerBuilder instance
-     *
-     * @throws \InvalidArgumentException When provided tag is not defined in this extension
-     *
-     * @api
+     * @param array $config
+     * @param ContainerBuilder $container
+     * @throws \Exception
      */
-    public function load(array $configs, ContainerBuilder $container)
+    public function loadInternal(array $config, ContainerBuilder $container)
     {
-        $configuration = new Configuration();
-        $config = $this->processConfiguration($configuration, $configs);
-
         $container->setParameter("draw_swagger.schema", $config['schema']);
 
         $fileLocator = new FileLocator(__DIR__ . '/../Resources/config');

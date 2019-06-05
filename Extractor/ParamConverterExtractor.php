@@ -1,6 +1,4 @@
-<?php
-
-namespace Draw\SwaggerBundle\Extractor;
+<?php namespace Draw\SwaggerBundle\Extractor;
 
 use Doctrine\Common\Annotations\Reader;
 use Draw\DrawBundle\Serializer\GroupHierarchy;
@@ -26,10 +24,9 @@ class ParamConverterExtractor implements ExtractorInterface
      */
     private $groupHierarchy;
 
-    public function __construct(Reader $reader, GroupHierarchy $groupHierarchy)
+    public function __construct(Reader $reader)
     {
         $this->reader = $reader;
-        $this->groupHierarchy = $groupHierarchy;
     }
 
     /**
@@ -85,14 +82,8 @@ class ParamConverterExtractor implements ExtractorInterface
 
         $operation->parameters[] = $parameter = new BodyParameter();
 
-
-
-        if ($serializationGroups = $this->getDeserializationGroups($paramConverter)) {
-            $serializationGroups = $this->groupHierarchy->getReachableGroups($serializationGroups);
-        }
-
+        $serializationGroups = $this->getDeserializationGroups($paramConverter);
         $validationGroups = $this->getValidationGroups($paramConverter);
-
 
         $subContext = $extractionContext->createSubContext();
         $modelContext = $subContext->getParameter('model-context', []);

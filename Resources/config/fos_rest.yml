@@ -3,12 +3,10 @@ parameters:
     draw.swagger.extrator.fos_rest_route_operation_extractor.class: Draw\SwaggerBundle\Extractor\FOSRestRouteOperationExtractor
 
 services:
-
     draw.swagger.extrator.fos_rest_view_operation_extractor:
         class: '%draw.swagger.extrator.fos_rest_view_operation_extractor.class%'
         arguments:
             - '@annotation_reader'
-            - '@draw.serializer.group_hierarchy'
         tags:
             - {name: swagger.extractor}
 

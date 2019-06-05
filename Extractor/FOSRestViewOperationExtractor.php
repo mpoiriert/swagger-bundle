@@ -3,7 +3,6 @@
 namespace Draw\SwaggerBundle\Extractor;
 
 use Doctrine\Common\Annotations\Reader;
-use Draw\DrawBundle\Serializer\GroupHierarchy;
 use Draw\Swagger\Extraction\ExtractionContextInterface;
 use Draw\Swagger\Extraction\ExtractionImpossibleException;
 use Draw\Swagger\Extraction\ExtractorInterface;
@@ -19,15 +18,9 @@ class FOSRestViewOperationExtractor implements ExtractorInterface
      */
     private $annotationReader;
 
-    /**
-     * @var GroupHierarchy
-     */
-    private $groupHierarchy;
-
-    public function __construct(Reader $reader, GroupHierarchy $groupHierarchy)
+    public function __construct(Reader $reader)
     {
         $this->annotationReader = $reader;
-        $this->groupHierarchy = $groupHierarchy;
     }
 
     /**
@@ -76,8 +69,6 @@ class FOSRestViewOperationExtractor implements ExtractorInterface
         if(empty($groups)) {
             $groups = array(GroupsExclusionStrategy::DEFAULT_GROUP);
         }
-
-        $groups = $this->groupHierarchy->getReachableGroups($groups);
 
         $modelContext = $extractionContext->getParameter('model-context', []);
         $modelContext['serializer-groups'] = $groups;
