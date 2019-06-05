@@ -9,10 +9,14 @@ parameters:
     draw.swagger.extrator.type_schema_extractor.class: Draw\Swagger\Extraction\Extractor\TypeSchemaExtractor
 
 services:
-    draw.swagger:
+    Draw\Swagger\Swagger:
         class: '%draw.swagger.class%'
         arguments:
             - '@jms_serializer.serializer'
+        public: true
+
+    draw.swagger:
+        alias: 'Draw\Swagger\Swagger'
         public: true
 
     draw.swagger.extrator.symfony_container_swagger_extractor:

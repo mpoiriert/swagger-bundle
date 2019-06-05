@@ -1,0 +1,76 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "test",
+    "version": "1.0"
+  },
+  "paths": {
+    "\/tests\/{id}.{_format}": {
+      "get": {
+        "operationId": "get",
+        "parameters": [
+          {
+            "type": "string",
+            "name": "id",
+            "description": "Php doc description",
+            "in": "path"
+          },
+          {
+            "type": "string",
+            "name": "_format",
+            "in": "path"
+          },
+          {
+            "type": "string",
+            "name": "filter",
+            "description": "fos description",
+            "in": "query"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "required": [
+                "object"
+              ],
+              "type": "object",
+              "properties": {
+                "object": {
+                  "description": "Object parameter",
+                  "$ref": "#\/definitions\/Draw.SwaggerBundle.Tests.Mock.Model.Test?1"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "schema": {
+              "$ref": "#\/definitions\/Draw.SwaggerBundle.Tests.Mock.Model.Test"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Draw.SwaggerBundle.Tests.Mock.Model.Test": {
+      "type": "object",
+      "properties": {
+        "property": {
+          "description": "Property description",
+          "type": "string"
+        }
+      }
+    },
+    "Draw.SwaggerBundle.Tests.Mock.Model.Test?1": {
+      "type": "object",
+      "properties": {
+        "property": {
+          "description": "Property description",
+          "type": "string"
+        }
+      }
+    }
+  }
+}

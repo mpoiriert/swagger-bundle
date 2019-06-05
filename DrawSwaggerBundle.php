@@ -16,9 +16,4 @@ class DrawSwaggerBundle extends Bundle
         $container->addCompilerPass(new OverrideServiceCompilerPass());
         $container->addCompilerPass(new ExtractorCompilerPass());
     }
-
-    public function boot()
-    {
-        \Doctrine\Common\Annotations\AnnotationRegistry::registerLoader('class_exists');
-    }
 }
