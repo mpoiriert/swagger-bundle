@@ -9,6 +9,16 @@ parameters:
     draw.swagger.extrator.type_schema_extractor.class: Draw\Swagger\Extraction\Extractor\TypeSchemaExtractor
 
 services:
+    Draw\Swagger\JMSSerializerHandler:
+        class: 'Draw\Swagger\JMSSerializerHandler'
+        autoconfigure: true
+        autowire: true
+
+    Draw\Swagger\JMSSerializerListener:
+        class: 'Draw\Swagger\JMSSerializerListener'
+        autoconfigure: true
+        autowire: true
+
     Draw\Swagger\Swagger:
         class: '%draw.swagger.class%'
         arguments:
