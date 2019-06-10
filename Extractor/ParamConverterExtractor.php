@@ -1,7 +1,6 @@
 <?php namespace Draw\SwaggerBundle\Extractor;
 
 use Doctrine\Common\Annotations\Reader;
-use Draw\DrawBundle\Serializer\GroupHierarchy;
 use Draw\Swagger\Schema\Schema;
 use Draw\Swagger\Extraction\ExtractionContextInterface;
 use Draw\Swagger\Extraction\ExtractionImpossibleException;
@@ -18,11 +17,6 @@ class ParamConverterExtractor implements ExtractorInterface
      * @var Reader
      */
     private $reader;
-
-    /**
-     * @var GroupHierarchy
-     */
-    private $groupHierarchy;
 
     public function __construct(Reader $reader)
     {
@@ -129,7 +123,7 @@ class ParamConverterExtractor implements ExtractorInterface
 
     /**
      * @param ReflectionMethod $reflectionMethod
-     * @return \Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter
+     * @return ParamConverter|null
      */
     private function getParamConverter(ReflectionMethod $reflectionMethod)
     {
@@ -140,7 +134,16 @@ class ParamConverterExtractor implements ExtractorInterface
                     return false;
                 }
 
-                return $converter->getConverter() == "fos_rest.request_body";
+                if($converter->getConverter() != "fos_rest.request_body") {
+                    return false;
+                }
+
+                $options = $converter->getOptions();
+                if(isset($options['swagger']['disable']) && $options['swagger']['disable']) {
+                    return false;
+                }
+
+                return true;
             }
         );
 
