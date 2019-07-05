@@ -4,6 +4,7 @@ namespace Draw\SwaggerBundle\DependencyInjection;
 
 use Draw\Swagger\Extraction\Extractor\DoctrineInheritanceExtractor;
 use Doctrine\ORM\EntityManager;
+use Draw\Swagger\Swagger;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
@@ -31,6 +32,9 @@ class DrawSwaggerExtension extends ConfigurableExtension
         }
 
         $loader->load('swagger.yml');
+
+        $container->getDefinition(Swagger::class)
+            ->addMethodCall('setCleanOnDump', [$config['cleanOnDump']]);
 
         $definition = $container->getDefinition("draw.swagger.extrator.type_schema_extractor");
 

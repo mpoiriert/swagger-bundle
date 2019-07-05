@@ -23,6 +23,9 @@ class Configuration implements ConfigurationInterface
         $rootNode->setBuilder(new AllowExtraPropertiesNodeBuilder());
 
         $rootNode->children()
+            ->booleanNode('cleanOnDump')
+                ->defaultTrue()
+            ->end()
             ->arrayNode('definitionAliases')
                 ->defaultValue(array())
                 ->prototype("array")

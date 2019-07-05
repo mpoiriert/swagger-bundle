@@ -5,6 +5,7 @@ namespace Draw\SwaggerBundle\Tests\Mock\Controller;
 use Draw\Swagger\Schema as Swagger;
 use FOS\RestBundle\Controller\Annotations as FOS;
 use FOS\RestBundle\Controller\FOSRestController;
+use Symfony\Component\Routing\Annotation\Route;
 
 class TestController extends FOSRestController
 {
@@ -22,6 +23,19 @@ class TestController extends FOSRestController
      * @return \Draw\SwaggerBundle\Tests\Mock\Model\Test
      */
     public function getAction($object, $id, $filter = null)
+    {
+
+    }
+
+    /**
+     * @Route(methods={"POST"}, path="/tests")
+     *
+     * @Swagger\Operation(
+     *     operationId="createTest",
+     *     tags={"test"}
+     * )
+     */
+    public function createAction()
     {
 
     }
