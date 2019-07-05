@@ -1,6 +1,4 @@
-<?php
-
-namespace Draw\SwaggerBundle\Extractor;
+<?php namespace Draw\SwaggerBundle\Extractor;
 
 use Doctrine\Common\Annotations\Reader;
 use Draw\Swagger\Extraction\ExtractionContextInterface;
@@ -16,6 +14,11 @@ use Symfony\Component\Routing\RouterInterface;
 
 class SymfonyContainerSwaggerExtractor implements ExtractorInterface
 {
+    /**
+     * @var Reader
+     */
+    private $annotationReader;
+
     public function __construct(Reader $reader)
     {
         $this->annotationReader = $reader;
@@ -64,7 +67,7 @@ class SymfonyContainerSwaggerExtractor implements ExtractorInterface
     private function triggerRouteExtraction(RouterInterface $router, SwaggerSchema $schema, ExtractionContextInterface $extractionContext)
     {
         foreach ($router->getRouteCollection() as $operationId => $route) {
-            /* @var \Symfony\Component\Routing\Route $route */
+            /* @var Route $route */
             if(!($path = $route->getPath())) {
                 continue;
             }
@@ -83,13 +86,15 @@ class SymfonyContainerSwaggerExtractor implements ExtractorInterface
                 continue;
             }
 
-            if(!$this->isSwaggerRoute($route, $reflectionMethod)) {
+            $operation = $this->getOperation($route, $reflectionMethod);
+
+            if(is_null($operation)) {
                 continue;
             }
 
-            $operation = new Operation();
-
-            $operation->operationId = $operationId;
+            if(!$operation->operationId) {
+                $operation->operationId = $operationId;
+            }
 
             $extractionContext->getSwagger()->extract($route, $operation, $extractionContext);
             $extractionContext->getSwagger()->extract($reflectionMethod, $operation, $extractionContext);
@@ -106,18 +111,31 @@ class SymfonyContainerSwaggerExtractor implements ExtractorInterface
         }
     }
 
-    private function isSwaggerRoute(Route $route, \ReflectionMethod $method)
+    /**
+     * Return the operation for the route if the route is a swagger route
+     *
+     * @param Route $route
+     * @param \ReflectionMethod $method
+     * @return Operation|null
+     */
+    private function getOperation(Route $route, \ReflectionMethod $method)
     {
+        $operation = $this->annotationReader->getMethodAnnotation($method, Operation::class);
+
+        if($operation instanceof Operation) {
+            return $operation;
+        }
+
         if ($route->getDefault('_swagger')) {
-            return true;
+            return new Operation();
         }
 
         foreach($this->annotationReader->getMethodAnnotations($method) as $annotation) {
             if($annotation instanceof Tag) {
-                return true;
+                return new Operation();
             }
         }
 
-        return false;
+        return null;
     }
 }

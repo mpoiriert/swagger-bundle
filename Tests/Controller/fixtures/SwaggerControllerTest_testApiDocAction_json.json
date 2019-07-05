@@ -7,6 +7,9 @@
   "paths": {
     "\/tests\/{id}.{_format}": {
       "get": {
+        "tags": [
+          "Test"
+        ],
         "operationId": "get",
         "parameters": [
           {

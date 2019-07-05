@@ -2,12 +2,15 @@
 
 namespace Draw\SwaggerBundle\Tests\Mock\Controller;
 
+use Draw\Swagger\Schema as Swagger;
 use FOS\RestBundle\Controller\Annotations as FOS;
 use FOS\RestBundle\Controller\FOSRestController;
 
 class TestController extends FOSRestController
 {
     /**
+     * @Swagger\Tag("Test")
+     *
      * @FOS\Get("/tests/{id}")
      * @FOS\QueryParam(name="filter", description="fos description")
      * @FOS\RequestParam(name="object")
