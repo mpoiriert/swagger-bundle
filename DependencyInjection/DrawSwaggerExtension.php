@@ -1,13 +1,11 @@
-<?php
+<?php namespace Draw\SwaggerBundle\DependencyInjection;
 
-namespace Draw\SwaggerBundle\DependencyInjection;
-
-use Draw\Swagger\Extraction\Extractor\DoctrineInheritanceExtractor;
 use Doctrine\ORM\EntityManager;
+use Draw\Swagger\Extraction\Extractor\JmsSerializer\TypeToSchemaHandlerInterface;
 use Draw\Swagger\Swagger;
+use Draw\SwaggerBundle\Extractor\JmsSerializer\ReferenceTypeToSchemaHandler;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\DependencyInjection\ConfigurableExtension;
@@ -21,6 +19,10 @@ class DrawSwaggerExtension extends ConfigurableExtension
      */
     public function loadInternal(array $config, ContainerBuilder $container)
     {
+        $container
+            ->registerForAutoconfiguration(TypeToSchemaHandlerInterface::class)
+            ->addTag('swagger.jms_type_handler');
+
         $container->setParameter("draw_swagger.schema", $config['schema']);
 
         $fileLocator = new FileLocator(__DIR__ . '/../Resources/config');
@@ -36,7 +38,7 @@ class DrawSwaggerExtension extends ConfigurableExtension
         $container->getDefinition(Swagger::class)
             ->addMethodCall('setCleanOnDump', [$config['cleanOnDump']]);
 
-        $definition = $container->getDefinition("draw.swagger.extrator.type_schema_extractor");
+        $definition = $container->getDefinition("draw.swagger.extractor.type_schema_extractor");
 
         foreach ($config['definitionAliases'] as $alias) {
             $definition->addMethodCall(
@@ -46,12 +48,11 @@ class DrawSwaggerExtension extends ConfigurableExtension
         }
 
         if(class_exists(EntityManager::class)) {
-            $container->setDefinition(
-                DoctrineInheritanceExtractor::class,
-                $definition = new Definition(DoctrineInheritanceExtractor::class, [new Reference('doctrine')])
-            );
+            $loader->load('doctrine.yaml');
 
-            $definition->addTag('swagger.extractor');
+            $container
+                ->getDefinition('draw.swagger.extractor.jms_extractor')
+                ->addMethodCall('registerTypeToSchemaHandler', [new Reference(ReferenceTypeToSchemaHandler::class)]);
         }
     }
 }
