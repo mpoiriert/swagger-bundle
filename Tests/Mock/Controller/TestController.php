@@ -4,10 +4,10 @@ namespace Draw\SwaggerBundle\Tests\Mock\Controller;
 
 use Draw\Swagger\Schema as Swagger;
 use FOS\RestBundle\Controller\Annotations as FOS;
-use FOS\RestBundle\Controller\FOSRestController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 
-class TestController extends FOSRestController
+class TestController
 {
     /**
      * @Swagger\Tag("Test")
@@ -34,9 +34,13 @@ class TestController extends FOSRestController
      *     operationId="createTest",
      *     tags={"test"}
      * )
+     *
+     * @Swagger\QueryParameter(name="param1")
+     *
+     * @param string $param1
      */
-    public function createAction()
+    public function createAction($param1 = 'default')
     {
-
+        return new JsonResponse(compact('param1'));
     }
 }

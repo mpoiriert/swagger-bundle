@@ -1,0 +1,6 @@
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+
+  Draw\SwaggerBundle\Listener\QueryParameterFetcherSubscriber: ~

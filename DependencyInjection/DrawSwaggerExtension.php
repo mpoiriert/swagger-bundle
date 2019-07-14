@@ -67,6 +67,10 @@ class DrawSwaggerExtension extends ConfigurableExtension
                 ->getDefinition('draw.swagger.extractor.jms_extractor')
                 ->addMethodCall('registerTypeToSchemaHandler', [new Reference(ReferenceTypeToSchemaHandler::class)]);
         }
+
+        if($config['convertQueryParameterToAttribute']) {
+            $loader->load('query_parameter_fetcher.yaml');
+        }
     }
 
     private function loadConditionalBundleFile(

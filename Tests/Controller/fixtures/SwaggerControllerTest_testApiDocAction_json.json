@@ -5,22 +5,17 @@
     "version": "1.0"
   },
   "paths": {
-    "\/tests\/{id}.{_format}": {
+    "\/tests\/{id}": {
       "get": {
         "tags": [
           "Test"
         ],
-        "operationId": "get",
+        "operationId": "draw_swagger_tests_mock_test_get",
         "parameters": [
           {
             "type": "string",
             "name": "id",
             "description": "Php doc description",
-            "in": "path"
-          },
-          {
-            "type": "string",
-            "name": "_format",
             "in": "path"
           },
           {
@@ -55,19 +50,13 @@
         }
       }
     },
-    "\/create.{_format}": {
-      "get": {
+    "\/tests": {
+      "post": {
         "tags": [
           "test"
         ],
         "operationId": "createTest",
-        "parameters": [
-          {
-            "type": "string",
-            "name": "_format",
-            "in": "path"
-          }
-        ],
+        "parameters": [],
         "responses": {}
       }
     }
