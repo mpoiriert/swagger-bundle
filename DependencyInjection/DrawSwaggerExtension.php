@@ -1,10 +1,11 @@
 <?php namespace Draw\SwaggerBundle\DependencyInjection;
 
-use Doctrine\ORM\EntityManager;
 use Draw\Swagger\Extraction\Extractor\JmsSerializer\TypeToSchemaHandlerInterface;
 use Draw\Swagger\Swagger;
 use Draw\SwaggerBundle\Extractor\JmsSerializer\ReferenceTypeToSchemaHandler;
+use RuntimeException;
 use Symfony\Component\Config\FileLocator;
+use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 use Symfony\Component\DependencyInjection\Reference;
@@ -29,11 +30,16 @@ class DrawSwaggerExtension extends ConfigurableExtension
         $loader = new YamlFileLoader($container, $fileLocator);
 
         // The order that extractor get registered is important so th fos_rest.yml must be loaded first
-        if(class_exists(\FOS\RestBundle\Routing\Loader\Reader\RestControllerReader::class)) {
-            $loader->load('fos_rest.yml');
-        }
+        $this->loadConditionalBundleFile(
+            $config,
+            $container,
+            'FOSRestBundle',
+            $loader,
+            'fos_rest.yaml',
+            'enableFosRestSupport'
+        );
 
-        $loader->load('swagger.yml');
+        $loader->load('swagger.yaml');
 
         $container->getDefinition(Swagger::class)
             ->addMethodCall('setCleanOnDump', [$config['cleanOnDump']]);
@@ -47,12 +53,48 @@ class DrawSwaggerExtension extends ConfigurableExtension
             );
         }
 
-        if(class_exists(EntityManager::class)) {
-            $loader->load('doctrine.yaml');
+        $doctrineSupportEnabled = $this->loadConditionalBundleFile(
+            $config,
+            $container,
+            'DoctrineBundle',
+            $loader,
+            'doctrine.yaml',
+            'enableDoctrineSupport'
+        );
 
+        if ($doctrineSupportEnabled) {
             $container
                 ->getDefinition('draw.swagger.extractor.jms_extractor')
                 ->addMethodCall('registerTypeToSchemaHandler', [new Reference(ReferenceTypeToSchemaHandler::class)]);
         }
+    }
+
+    private function loadConditionalBundleFile(
+        $config,
+        ContainerBuilder $container,
+        $bundleName,
+        LoaderInterface $loader,
+        $file,
+        $configurationName
+    ) {
+        $bundles = $container->getParameter('kernel.bundles');
+        switch (true) {
+            case is_null($config['enableFosRestSupport']) && isset($bundles[$bundleName]):
+            case $config[$configurationName]:
+                if (!isset($bundles[$bundleName])) {
+                    throw new RuntimeException(
+                        sprintf(
+                            '%s is not enabled while draw_swagger.%s is set to true. Remove draw_swagger.%s node or set it to false',
+                            $bundleName,
+                            $configurationName,
+                            $configurationName
+                        )
+                    );
+                }
+                $loader->load($file);
+                return true;
+        }
+
+        return false;
     }
 }

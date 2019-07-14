@@ -18,13 +18,22 @@ class Configuration implements ConfigurationInterface
      */
     public function getConfigTreeBuilder()
     {
-        $treeBuilder = new TreeBuilder();
-        $rootNode = $treeBuilder->root('draw_swagger');
+        $treeBuilder = new TreeBuilder('draw_swagger');
+        $rootNode = $treeBuilder->getRootNode();
         $rootNode->setBuilder(new AllowExtraPropertiesNodeBuilder());
 
         $rootNode->children()
             ->booleanNode('cleanOnDump')
                 ->defaultTrue()
+            ->end()
+            ->booleanNode('enableFosRestSupport')
+                ->defaultNull()
+            ->end()
+            ->booleanNode('enableDoctrineSupport')
+                ->defaultNull()
+            ->end()
+            ->booleanNode('convertQueryParameterToAttribute')
+                ->defaultFalse()
             ->end()
             ->arrayNode('definitionAliases')
                 ->defaultValue(array())
