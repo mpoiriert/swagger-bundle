@@ -1,5 +1,6 @@
 <?php namespace Draw\SwaggerBundle\Tests\Listener;
 
+use Draw\SwaggerBundle\Tests\Mock\Controller\TestController;
 use Draw\SwaggerBundle\Tests\TestCase;
 
 /**
@@ -8,23 +9,27 @@ use Draw\SwaggerBundle\Tests\TestCase;
  */
 class QueryParameterFetcherSubscriberTest extends TestCase
 {
+    /**
+     * @see TestController::createAction()
+     */
     public function testOnKernelController_withValue()
     {
         self::$client
             ->post('/tests?param1=toto', '')
-            ->assertStatus(200)
             ->toJsonDataTester()
-            ->path('param1')
+            ->path('property')
             ->assertSame('toto');
     }
 
+    /**
+     * @see TestController::createAction()
+     */
     public function testOnKernelController_defaultValue()
     {
         self::$client
             ->post('/tests', '')
-            ->assertStatus(200)
             ->toJsonDataTester()
-            ->path('param1')
+            ->path('property')
             ->assertSame('default');
     }
 }

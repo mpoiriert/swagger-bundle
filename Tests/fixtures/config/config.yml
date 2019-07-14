@@ -16,6 +16,7 @@ draw:
 
 draw_swagger:
   convertQueryParameterToAttribute: true
+  responseConverter: true
   schema:
     info:
       title: "test"

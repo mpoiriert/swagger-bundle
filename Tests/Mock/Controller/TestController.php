@@ -3,8 +3,9 @@
 namespace Draw\SwaggerBundle\Tests\Mock\Controller;
 
 use Draw\Swagger\Schema as Swagger;
+use Draw\SwaggerBundle\Tests\Mock\Model\Test;
+use Draw\SwaggerBundle\View\View;
 use FOS\RestBundle\Controller\Annotations as FOS;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 
 class TestController
@@ -18,13 +19,13 @@ class TestController
      *
      * @param string $id Php doc description
      * @param string $filter Should not be used since define in QueryParam
-     * @param \Draw\SwaggerBundle\Tests\Mock\Model\Test $object Object parameter
+     * @param Test $object Object parameter
      *
-     * @return \Draw\SwaggerBundle\Tests\Mock\Model\Test
+     * @return Test
      */
     public function getAction($object, $id, $filter = null)
     {
-
+        return new Test();
     }
 
     /**
@@ -37,10 +38,17 @@ class TestController
      *
      * @Swagger\QueryParameter(name="param1")
      *
+     * @View(statusCode=201)
+     *
      * @param string $param1
+     *
+     * @return Test
      */
     public function createAction($param1 = 'default')
     {
-        return new JsonResponse(compact('param1'));
+        $test = new Test();
+        $test->setProperty($param1);
+
+        return $test;
     }
 }

@@ -14,4 +14,20 @@ class Test
      * @var string
      */
     private $property;
+
+    /**
+     * @return string
+     */
+    public function getProperty()
+    {
+        return $this->property;
+    }
+
+    /**
+     * @param string $property
+     */
+    public function setProperty($property)
+    {
+        $this->property = $property;
+    }
 }

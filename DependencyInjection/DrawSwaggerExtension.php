@@ -71,6 +71,10 @@ class DrawSwaggerExtension extends ConfigurableExtension
         if($config['convertQueryParameterToAttribute']) {
             $loader->load('query_parameter_fetcher.yaml');
         }
+
+        if($config['responseConverter']) {
+            $loader->load('response_converter.yaml');
+        }
     }
 
     private function loadConditionalBundleFile(
