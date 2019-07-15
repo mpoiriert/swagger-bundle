@@ -60,7 +60,12 @@ services:
         tags:
             - {name: swagger.extractor}
 
-
+    Draw\SwaggerBundle\Extractor\ViewExtractor:
+        class: "Draw\\SwaggerBundle\\Extractor\\ViewExtractor"
+        tags:
+            - {name: swagger.extractor}
+        autoconfigure: true
+        autowire: true
 
     draw.swagger.extractor.jms_extractor:
         class: '%draw.swagger.extractor.jms_extractor.class%'

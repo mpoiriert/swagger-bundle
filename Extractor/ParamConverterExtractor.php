@@ -108,7 +108,7 @@ class ParamConverterExtractor implements ExtractorInterface
             return $options['deserializationContext']['groups'];
         }
 
-        return  array(GroupsExclusionStrategy::DEFAULT_GROUP);
+        return  [GroupsExclusionStrategy::DEFAULT_GROUP];
     }
 
     private function getValidationGroups(ParamConverter $paramConverter)
@@ -134,7 +134,7 @@ class ParamConverterExtractor implements ExtractorInterface
                     return false;
                 }
 
-                if($converter->getConverter() != "fos_rest.request_body") {
+                if(!in_array($converter->getConverter(), ["fos_rest.request_body", "draw.request_body"])) {
                     return false;
                 }
 

@@ -10,10 +10,21 @@ class Test
      * Property description
      *
      * @Serializer\Type("string")
+     * @Serializer\Groups({"Included"})
      *
      * @var string
      */
     private $property;
+
+    /**
+     * Will be excluded because of the group
+     *
+     * @var string
+     *
+     * @Serializer\Type("string")
+     * @Serializer\Groups({"Excluded"})
+     */
+    private $propertyGroupExclusion;
 
     /**
      * @return string

@@ -6,6 +6,7 @@ use Draw\Swagger\Schema as Swagger;
 use Draw\SwaggerBundle\Tests\Mock\Model\Test;
 use Draw\SwaggerBundle\View\View;
 use FOS\RestBundle\Controller\Annotations as FOS;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\Routing\Annotation\Route;
 
 class TestController
@@ -15,7 +16,15 @@ class TestController
      *
      * @FOS\Get("/tests/{id}")
      * @FOS\QueryParam(name="filter", description="fos description")
-     * @FOS\RequestParam(name="object")
+     * @ParamConverter(
+     *     name="object",
+     *     converter="fos_rest.request_body",
+     *     options={"deserializationContext"={"groups"={"Included"}}}
+     * )
+     *
+     * @FOS\View(
+     *     serializerGroups={"Included"}
+     * )
      *
      * @param string $id Php doc description
      * @param string $filter Should not be used since define in QueryParam
@@ -23,7 +32,7 @@ class TestController
      *
      * @return Test
      */
-    public function getAction($object, $id, $filter = null)
+    public function getAction(Test $object, $id, $filter = null)
     {
         return new Test();
     }
@@ -38,7 +47,7 @@ class TestController
      *
      * @Swagger\QueryParameter(name="param1")
      *
-     * @View(statusCode=201)
+     * @View(statusCode=201, serializerGroups={"Included"})
      *
      * @param string $param1
      *
