@@ -22,7 +22,18 @@ class Configuration implements ConfigurationInterface
         $rootNode = $treeBuilder->getRootNode();
         $rootNode->setBuilder(new AllowExtraPropertiesNodeBuilder());
 
-        $rootNode->children()
+        $rootNode
+            ->beforeNormalization()
+            ->always(
+                function ($nodes) {
+                    if(!isset($nodes['requestBodyParamConverter'])) {
+                        $nodes['requestBodyParamConverter'] = null;
+                    }
+                    return $nodes;
+                }
+            )
+            ->end()
+            ->children()
             ->booleanNode('cleanOnDump')
                 ->defaultTrue()
             ->end()
@@ -34,6 +45,28 @@ class Configuration implements ConfigurationInterface
             ->end()
             ->booleanNode('convertQueryParameterToAttribute')
                 ->defaultFalse()
+            ->end()
+            ->arrayNode('requestBodyParamConverter')
+                ->beforeNormalization()
+                    ->always(
+                        function ($nodes) {
+                            if (is_null($nodes)) {
+                                $nodes = ['defaultDeserializationConfiguration' => []];
+                            }
+                            return $nodes;
+                        }
+                    )
+                ->end()
+                ->children()
+                    ->arrayNode('defaultDeserializationConfiguration')
+                        ->children()
+                            ->arrayNode('deserializationGroups')
+                                ->prototype('variable')
+                                ->end()
+                            ->end()
+                        ->end()
+                    ->end()
+                ->end()
             ->end()
             ->arrayNode('responseConverter')
                 ->canBeEnabled()

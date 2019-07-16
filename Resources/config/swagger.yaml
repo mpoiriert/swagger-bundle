@@ -19,6 +19,13 @@ services:
         autoconfigure: true
         autowire: true
 
+    Draw\SwaggerBundle\Request\RequestBodyParamConverter:
+        class: 'Draw\SwaggerBundle\Request\RequestBodyParamConverter'
+        autoconfigure: true
+        autowire: true
+        tags:
+            - { name: request.param_converter, converter: 'draw.request_body' }
+
     Draw\Swagger\Swagger:
         class: '%draw.swagger.class%'
         arguments:

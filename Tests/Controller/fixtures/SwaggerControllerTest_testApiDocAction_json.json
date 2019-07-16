@@ -53,6 +53,14 @@
             "type": "string",
             "name": "param1",
             "in": "query"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "type": "object",
+              "$ref": "#\/definitions\/Draw.SwaggerBundle.Tests.Mock.Model.Test"
+            }
           }
         ],
         "responses": {
@@ -71,6 +79,10 @@
       "properties": {
         "property": {
           "description": "Property description",
+          "type": "string"
+        },
+        "property_from_body": {
+          "description": "Property deserialize from body in test",
           "type": "string"
         }
       }

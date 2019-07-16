@@ -1,7 +1,6 @@
-<?php
+<?php namespace Draw\SwaggerBundle\Tests\Mock\Controller;
 
-namespace Draw\SwaggerBundle\Tests\Mock\Controller;
-
+use Draw\SwaggerBundle\Request\DeserializeBody;
 use Draw\Swagger\Schema as Swagger;
 use Draw\SwaggerBundle\Tests\Mock\Model\Test;
 use Draw\SwaggerBundle\View\View;
@@ -47,15 +46,20 @@ class TestController
      *
      * @Swagger\QueryParameter(name="param1")
      *
+     * @DeserializeBody(
+     *     name="test",
+     *     deserializationGroups={"Included"}
+     * )
+     *
      * @View(statusCode=201, serializerGroups={"Included"})
      *
      * @param string $param1
+     * @param Test $test
      *
      * @return Test
      */
-    public function createAction($param1 = 'default')
+    public function createAction(Test $test, $param1 = 'default')
     {
-        $test = new Test();
         $test->setProperty($param1);
 
         return $test;

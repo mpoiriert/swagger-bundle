@@ -4,10 +4,13 @@ use Draw\Swagger\Extraction\Extractor\JmsSerializer\TypeToSchemaHandlerInterface
 use Draw\Swagger\Swagger;
 use Draw\SwaggerBundle\Extractor\JmsSerializer\ReferenceTypeToSchemaHandler;
 use Draw\SwaggerBundle\Listener\ResponseConverterSubscriber;
+use Draw\SwaggerBundle\Request\DeserializeBody;
+use Draw\SwaggerBundle\Request\RequestBodyParamConverter;
 use RuntimeException;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\DependencyInjection\ConfigurableExtension;
@@ -79,6 +82,16 @@ class DrawSwaggerExtension extends ConfigurableExtension
                 ->getDefinition(ResponseConverterSubscriber::class)
                 ->setArgument('$serializeNull', $config['responseConverter']['serializeNull']);
         }
+
+        $container
+            ->getDefinition(RequestBodyParamConverter::class)
+            ->setArgument(
+                '$defaultConfiguration',
+                new Definition(
+                    DeserializeBody::class,
+                    [$config['requestBodyParamConverter']['defaultDeserializationConfiguration']]
+                )
+            );
     }
 
     private function loadConditionalBundleFile(
