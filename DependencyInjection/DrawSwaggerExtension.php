@@ -3,6 +3,7 @@
 use Draw\Swagger\Extraction\Extractor\JmsSerializer\TypeToSchemaHandlerInterface;
 use Draw\Swagger\Swagger;
 use Draw\SwaggerBundle\Extractor\JmsSerializer\ReferenceTypeToSchemaHandler;
+use Draw\SwaggerBundle\Listener\ResponseConverterSubscriber;
 use RuntimeException;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\Config\Loader\LoaderInterface;
@@ -72,8 +73,11 @@ class DrawSwaggerExtension extends ConfigurableExtension
             $loader->load('query_parameter_fetcher.yaml');
         }
 
-        if($config['responseConverter']) {
+        if ($config['responseConverter']['enabled']) {
             $loader->load('response_converter.yaml');
+            $container
+                ->getDefinition(ResponseConverterSubscriber::class)
+                ->setArgument('$serializeNull', $config['responseConverter']['serializeNull']);
         }
     }
 

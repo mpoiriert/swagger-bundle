@@ -48,7 +48,13 @@
           "test"
         ],
         "operationId": "createTest",
-        "parameters": [],
+        "parameters": [
+          {
+            "type": "string",
+            "name": "param1",
+            "in": "query"
+          }
+        ],
         "responses": {
           "200": {
             "schema": {

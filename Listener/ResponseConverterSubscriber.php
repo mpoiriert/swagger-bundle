@@ -17,6 +17,13 @@ class ResponseConverterSubscriber implements EventSubscriberInterface
     private $serializationContextFactory;
 
     /**
+     * If we must serialize null
+     *
+     * @var boolean
+     */
+    private $serializeNull;
+
+    /**
      * @var SerializerInterface
      */
     private $serializer;
@@ -31,11 +38,13 @@ class ResponseConverterSubscriber implements EventSubscriberInterface
 
     public function __construct(
         SerializerInterface $serializer,
-        SerializationContextFactoryInterface $serializationContextFactory
+        SerializationContextFactoryInterface $serializationContextFactory,
+        $serializeNull
     )
     {
         $this->serializationContextFactory = $serializationContextFactory;
         $this->serializer = $serializer;
+        $this->serializeNull = $serializeNull;
     }
 
     public function onKernelView(ViewEvent $event)
@@ -65,6 +74,7 @@ class ResponseConverterSubscriber implements EventSubscriberInterface
         }
 
         $context = $this->serializationContextFactory->createSerializationContext();
+        $context->setSerializeNull($this->serializeNull);
 
         // If we have a view annotation set via the controller configuration it will be available under _template
         // This is were symfony store the template attribute and since the view extend from template it will be
