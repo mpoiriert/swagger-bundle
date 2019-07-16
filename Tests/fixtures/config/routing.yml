@@ -4,3 +4,4 @@ swagger:
 test:
     resource: '@DrawSwaggerBundle/Tests/Mock/Controller/TestController.php'
     type: 'annotation'
+    format: 'json'

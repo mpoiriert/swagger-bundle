@@ -40,8 +40,7 @@ class ResponseConverterSubscriber implements EventSubscriberInterface
         SerializerInterface $serializer,
         SerializationContextFactoryInterface $serializationContextFactory,
         $serializeNull
-    )
-    {
+    ) {
         $this->serializationContextFactory = $serializationContextFactory;
         $this->serializer = $serializer;
         $this->serializeNull = $serializeNull;
@@ -56,11 +55,7 @@ class ResponseConverterSubscriber implements EventSubscriberInterface
             return;
         }
 
-        if(!($contentTypes = $request->getAcceptableContentTypes())) {
-            return;
-        }
-
-        switch ($requestFormat = $request->getFormat($contentTypes[0])) {
+        switch ($requestFormat = $request->getRequestFormat()) {
             case 'json':
             case 'xml':
                 break;
@@ -81,12 +76,12 @@ class ResponseConverterSubscriber implements EventSubscriberInterface
         // stored there.
         $view = $request->attributes->get('_template');
 
-        if($view instanceof View) {
-            if($version = $view->getSerializerVersion()) {
+        if ($view instanceof View) {
+            if ($version = $view->getSerializerVersion()) {
                 $context->setVersion($version);
             }
 
-            if($groups = $view->getSerializerGroups()) {
+            if ($groups = $view->getSerializerGroups()) {
                 $context->setGroups($groups);
             }
         }
@@ -94,7 +89,7 @@ class ResponseConverterSubscriber implements EventSubscriberInterface
         $data = $this->serializer->serialize($result, $requestFormat, $context);
         $response = new JsonResponse($data, 200, ['Content-Type' => 'application/' . $requestFormat], true);
 
-        if($view instanceof View && $view->getStatusCode()) {
+        if ($view instanceof View && $view->getStatusCode()) {
             $response->setStatusCode($view->getStatusCode());
         }
 
