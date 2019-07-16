@@ -109,6 +109,13 @@ services:
         parent: draw.swagger.extractor.constraint_extractor
         class: Draw\Swagger\Extraction\Extractor\Constraint\CountConstraintExtractor
 
+    Draw\Swagger\Extraction\Extractor\SwaggerParameterExtractor:
+        class: 'Draw\Swagger\Extraction\Extractor\SwaggerParameterExtractor'
+        autoconfigure: true
+        autowire: true
+        tags:
+            - {name: swagger.extractor}
+
     draw.swagger.extractor.php_doc_operation_exractor:
         class: '%draw.swagger.extractor.php_doc_operation_exractor.class%'
         tags:
