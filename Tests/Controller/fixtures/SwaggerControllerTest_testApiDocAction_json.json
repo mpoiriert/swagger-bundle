@@ -16,7 +16,8 @@
             "type": "string",
             "name": "id",
             "description": "Php doc description",
-            "in": "path"
+            "in": "path",
+            "required": true
           },
           {
             "type": "string",
