@@ -3,6 +3,9 @@
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 
 /**
+ * This param convert is for auto-completion of option in ide.
+ * Private properties are converted to options
+ *
  * @Annotation
  */
 class DeserializeBody extends ParamConverter
@@ -36,6 +39,30 @@ class DeserializeBody extends ParamConverter
     public function __construct(array $values)
     {
         $values['converter'] = $values['converter'] ?? 'draw.request_body';
+
+        // We set the properties in the options array since they would be overriden by
+        // the set options if it's configuration after
+        foreach($values as $key => $value) {
+            switch ($key) {
+                case 'validate':
+                    $values['options']['validate'] = $value;
+                    unset($values[$key]);
+                    break;
+                case 'deserializationEnableMaxDepth':
+                    $values['options']['deserializationContext']['enableMaxDepth'] = $value;
+                    unset($values[$key]);
+                    break;
+                case 'deserializationGroups':
+                    $values['options']['deserializationContext']['groups'] = $value;
+                    unset($values[$key]);
+                    break;
+                case 'validationGroups':
+                    $values['options']['validator']['groups'] = $value;
+                    unset($values[$key]);
+                    break;
+            }
+        }
+
         parent::__construct($values);
     }
 
@@ -54,6 +81,25 @@ class DeserializeBody extends ParamConverter
     {
         $options = $this->getOptions();
         $options['validate'] = $validate;
+        $this->setOptions($options);
+    }
+
+    /**
+     * @return array
+     */
+    public function getValidationGroups()
+    {
+        $options = $this->getOptions();
+        return $options['validator']['groups'] ?? null;
+    }
+
+    /**
+     * @param array $validationGroups
+     */
+    public function setValidationGroups($validationGroups)
+    {
+        $options = $this->getOptions();
+        $options['validator']['groups'] = $validationGroups;
         $this->setOptions($options);
     }
 
