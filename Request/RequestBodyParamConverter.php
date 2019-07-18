@@ -150,15 +150,19 @@ class RequestBodyParamConverter implements ParamConverterInterface
     {
         foreach ($options as $key => $value) {
             switch($key) {
-                case 'groups' && $value:
-                    $context->setGroups($value);
+                case 'groups':
+                    if($value) {
+                        $context->setGroups($value);
+                    }
                     break;
                 case 'version':
                     $context->setVersion($value);
                     break;
-                case 'maxDepth' && $value == true:
-                case 'enableMaxDepth' && $value == true:
-                    $context->enableMaxDepthChecks();
+                case 'maxDepth':
+                case 'enableMaxDepth':
+                    if($value) {
+                        $context->enableMaxDepthChecks();
+                    }
                     break;
                 default:
                     $context->setAttribute($key, $value);
