@@ -64,7 +64,7 @@
           }
         ],
         "responses": {
-          "200": {
+          "201": {
             "description": "The created test entity",
             "schema": {
               "$ref": "#\/definitions\/Draw.SwaggerBundle.Tests.Mock.Model.Test"

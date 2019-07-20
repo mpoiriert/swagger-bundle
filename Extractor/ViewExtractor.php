@@ -66,6 +66,9 @@ class ViewExtractor implements ExtractorInterface
 
         if ($view = $this->getView($extractionContext->getParameter('controller-reflection-method'))) {
             $groups = $view->getSerializerGroups();
+            if($statusCode = $view->getStatusCode()) {
+                $extractionContext->setParameter('response-status-code', $statusCode);
+            }
         }
 
         if (empty($groups)) {
