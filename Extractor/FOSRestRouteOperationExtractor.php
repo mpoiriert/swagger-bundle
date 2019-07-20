@@ -82,7 +82,6 @@ class FOSRestRouteOperationExtractor implements ExtractorInterface
                 if(is_null($parameter)) {
                     $type->parameters[] = $parameter = new BodyParameter();
                     $parameter->schema = new Schema();
-                    $parameter->schema->type = "object";
                 }
 
                 $parameter->schema->properties[$paramName] = $propertySchema = new Schema();

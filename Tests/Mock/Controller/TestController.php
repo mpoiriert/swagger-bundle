@@ -29,7 +29,7 @@ class TestController
      * @param string $filter Should not be used since define in QueryParam
      * @param Test $object Object parameter
      *
-     * @return Test
+     * @return Test The loaded test entity
      */
     public function getAction(Test $object, $id, $filter = null)
     {
@@ -56,7 +56,7 @@ class TestController
      * @param string $param1
      * @param Test $test
      *
-     * @return Test
+     * @return Test The created test entity
      */
     public function createAction(Test $test, $param1 = 'default')
     {

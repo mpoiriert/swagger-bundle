@@ -29,13 +29,13 @@
             "in": "body",
             "name": "body",
             "schema": {
-              "type": "object",
               "$ref": "#\/definitions\/Draw.SwaggerBundle.Tests.Mock.Model.Test"
             }
           }
         ],
         "responses": {
           "200": {
+            "description": "The loaded test entity",
             "schema": {
               "$ref": "#\/definitions\/Draw.SwaggerBundle.Tests.Mock.Model.Test"
             }
@@ -59,13 +59,13 @@
             "in": "body",
             "name": "body",
             "schema": {
-              "type": "object",
               "$ref": "#\/definitions\/Draw.SwaggerBundle.Tests.Mock.Model.Test"
             }
           }
         ],
         "responses": {
           "200": {
+            "description": "The created test entity",
             "schema": {
               "$ref": "#\/definitions\/Draw.SwaggerBundle.Tests.Mock.Model.Test"
             }

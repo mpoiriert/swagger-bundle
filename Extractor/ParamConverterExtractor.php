@@ -97,8 +97,6 @@ class ParamConverterExtractor implements ExtractorInterface
             $parameter->schema = new Schema(),
             $subContext
         );
-
-        $parameter->schema->type = "object";
     }
 
     private function getDeserializationGroups(ParamConverter $paramConverter)
