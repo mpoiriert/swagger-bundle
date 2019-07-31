@@ -4,6 +4,7 @@ use Doctrine\Common\Annotations\Reader;
 use Draw\Swagger\Extraction\ExtractionContextInterface;
 use Draw\Swagger\Extraction\ExtractionImpossibleException;
 use Draw\Swagger\Extraction\ExtractorInterface;
+use Draw\Swagger\Schema\Response;
 use Draw\Swagger\Schema\Schema;
 use Draw\SwaggerBundle\View\View;
 use JMS\Serializer\Exclusion\GroupsExclusionStrategy;
@@ -68,6 +69,13 @@ class ViewExtractor implements ExtractorInterface
             $groups = $view->getSerializerGroups();
             if($statusCode = $view->getStatusCode()) {
                 $extractionContext->setParameter('response-status-code', $statusCode);
+            }
+
+            /** @var Response $response */
+            if($response = $extractionContext->getParameter('response')) {
+                foreach($view->getHeaders() as $name => $header) {
+                    $response->headers[$name] = $header;
+                }
             }
         }
 

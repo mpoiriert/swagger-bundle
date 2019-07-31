@@ -51,7 +51,13 @@ class TestController
      *     deserializationGroups={"Included"}
      * )
      *
-     * @View(statusCode=201, serializerGroups={"Included"})
+     * @View(
+     *     statusCode=201,
+     *     serializerGroups={"Included"},
+     *     headers={
+     *       "X-Draw":@Swagger\Header(type="string", description="Description of the header")
+     *     }
+     * )
      *
      * @param string $param1
      * @param Test $test

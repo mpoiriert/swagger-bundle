@@ -1,5 +1,6 @@
 <?php namespace Draw\SwaggerBundle\View;
 
+use Draw\Swagger\Schema\Header;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 
 /**
@@ -27,6 +28,11 @@ class View extends Template
      * @var string
      */
     protected $serializerVersion;
+
+    /**
+     * @var Header[]|array
+     */
+    protected $headers;
 
     /**
      * @param int $statusCode
@@ -90,5 +96,21 @@ class View extends Template
     public function setSerializerVersion($serializerVersion)
     {
         $this->serializerVersion = $serializerVersion;
+    }
+
+    /**
+     * @return Header[]
+     */
+    public function getHeaders()
+    {
+        return $this->headers;
+    }
+
+    /**
+     * @param Header[] $headers
+     */
+    public function setHeaders($headers)
+    {
+        $this->headers = $headers;
     }
 }
