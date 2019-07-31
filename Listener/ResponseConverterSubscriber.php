@@ -6,6 +6,8 @@ use JMS\Serializer\SerializerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
+use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\Event\ViewEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
@@ -32,7 +34,8 @@ class ResponseConverterSubscriber implements EventSubscriberInterface
     {
         // Must be executed before SensioFrameworkExtraBundle's listener
         return [
-            KernelEvents::VIEW => ['onKernelView', 30]
+            KernelEvents::VIEW => ['onKernelView', 30],
+            KernelEvents::RESPONSE => ['onKernelResponse', 30]
         ];
     }
 
@@ -94,5 +97,14 @@ class ResponseConverterSubscriber implements EventSubscriberInterface
         }
 
         $event->setResponse($response);
+    }
+
+    public function onKernelResponse(ResponseEvent $responseEvent)
+    {
+        if($responseHeaderBag = $responseEvent->getRequest()->attributes->get('_responseHeaderBag', [])) {
+            if($responseHeaderBag instanceof ResponseHeaderBag) {
+                $responseEvent->getResponse()->headers->add($responseHeaderBag->allPreserveCase());
+            }
+        }
     }
 }

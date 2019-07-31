@@ -32,7 +32,7 @@ class View extends Template
     /**
      * @var Header[]|array
      */
-    protected $headers;
+    protected $headers = [];
 
     /**
      * @param int $statusCode
