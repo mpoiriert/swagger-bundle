@@ -74,7 +74,6 @@ class RequestBodyParamConverter implements ParamConverterInterface
 
         $object = $this->deserialize(
             json_encode($requestData),
-            $request->getContentType(),
             $configuration
         );
 
@@ -91,7 +90,7 @@ class RequestBodyParamConverter implements ParamConverterInterface
         return true;
     }
 
-    private function deserialize($data, $format, ParamConverter $configuration)
+    private function deserialize($data, ParamConverter $configuration)
     {
         $defaultOptions = $this->defaultConfiguration->getOptions();
         $options = $configuration->getOptions();
@@ -107,7 +106,7 @@ class RequestBodyParamConverter implements ParamConverterInterface
             return $this->serializer->deserialize(
                 $data,
                 $configuration->getClass(),
-                $format,
+                'json',
                 $context
             );
         } catch (UnsupportedFormatException $e) {
