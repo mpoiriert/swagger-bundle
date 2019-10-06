@@ -1,5 +1,5 @@
 parameters:
-    draw.swagger.class: Draw\Swagger\Swagger
+    draw.swagger.class: Draw\SwaggerBundle\Swagger
     draw.swagger.extractor.php_doc_operation_exractor.class: Draw\Swagger\Extraction\Extractor\PhpDocOperationExtractor
     draw.swagger.extractor.jms_extractor.class: Draw\Swagger\Extraction\Extractor\JmsExtractor
     draw.swagger.extractor.symfony_container_swagger_extractor.class: Draw\SwaggerBundle\Extractor\SymfonyContainerSwaggerExtractor
@@ -31,6 +31,8 @@ services:
         arguments:
             - '@jms_serializer.serializer'
         public: true
+        autoconfigure: true
+        autowire: true
 
     draw.swagger:
         alias: 'Draw\Swagger\Swagger'
