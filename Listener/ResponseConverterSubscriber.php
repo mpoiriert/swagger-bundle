@@ -1,5 +1,6 @@
 <?php namespace Draw\SwaggerBundle\Listener;
 
+use Draw\SwaggerBundle\Event\PreSerializerResponseEvent;
 use Draw\SwaggerBundle\View\View;
 use JMS\Serializer\ContextFactory\SerializationContextFactoryInterface;
 use JMS\Serializer\SerializerInterface;
@@ -10,9 +11,15 @@ use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\Event\ViewEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 class ResponseConverterSubscriber implements EventSubscriberInterface
 {
+    /**
+     * @var EventDispatcherInterface
+     */
+    private $eventDispatcher;
+
     /**
      * @var SerializationContextFactoryInterface
      */
@@ -42,11 +49,13 @@ class ResponseConverterSubscriber implements EventSubscriberInterface
     public function __construct(
         SerializerInterface $serializer,
         SerializationContextFactoryInterface $serializationContextFactory,
+        EventDispatcherInterface $eventDispatcher,
         $serializeNull
     ) {
         $this->serializationContextFactory = $serializationContextFactory;
         $this->serializer = $serializer;
         $this->serializeNull = $serializeNull;
+        $this->eventDispatcher = $eventDispatcher;
     }
 
     public function onKernelView(ViewEvent $event)
@@ -88,6 +97,8 @@ class ResponseConverterSubscriber implements EventSubscriberInterface
                 $context->setGroups($groups);
             }
         }
+
+        $this->eventDispatcher->dispatch(new PreSerializerResponseEvent($result, $view, $context));
 
         $data = $this->serializer->serialize($result, $requestFormat, $context);
         $response = new JsonResponse($data, 200, ['Content-Type' => 'application/' . $requestFormat], true);
