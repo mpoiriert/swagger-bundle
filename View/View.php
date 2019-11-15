@@ -1,13 +1,13 @@
 <?php namespace Draw\SwaggerBundle\View;
 
 use Draw\Swagger\Schema\Header;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ConfigurationAnnotation;
 
 /**
  * @Annotation
  * @Target({"METHOD","CLASS"})
  */
-class View extends Template
+class View extends ConfigurationAnnotation
 {
     /**
      * @var int
@@ -112,5 +112,22 @@ class View extends Template
     public function setHeaders($headers)
     {
         $this->headers = $headers;
+    }
+
+    /**
+     * Returns the annotation alias name.
+     *
+     * @return string
+     *
+     * @see ConfigurationInterface
+     */
+    public function getAliasName()
+    {
+        return 'swagger';
+    }
+
+    public function allowArray()
+    {
+        return false;
     }
 }

@@ -83,10 +83,7 @@ class ResponseConverterSubscriber implements EventSubscriberInterface
         $context = $this->serializationContextFactory->createSerializationContext();
         $context->setSerializeNull($this->serializeNull);
 
-        // If we have a view annotation set via the controller configuration it will be available under _template
-        // This is were symfony store the template attribute and since the view extend from template it will be
-        // stored there.
-        $view = $request->attributes->get('_template');
+        $view = $request->attributes->get('_swagger');
 
         if ($view instanceof View) {
             if ($version = $view->getSerializerVersion()) {
