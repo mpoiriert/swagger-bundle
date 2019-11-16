@@ -51,9 +51,18 @@ class RequestBodyParamConverter implements ParamConverterInterface
     {
         $options = (array)$configuration->getOptions();
 
-        //This allow a empty body to be consider as '{}'
-        if(is_null($requestData = json_decode($request->getContent(), true))) {
-            $requestData = [];
+        switch(true) {
+            case $request->headers->get('Content-Type') == 'application/json':
+                //This allow a empty body to be consider as '{}'
+                if (is_null($requestData = json_decode($request->getContent(), true))) {
+                    $requestData = [];
+                }
+                break;
+            case strpos($request->headers->get('Content-Type'), 'multipart/form-data') === 0:
+                $requestData = $request->request->all();
+                break;
+            default:
+                throw new \RuntimeException('Invalid request format');
         }
 
         if (isset($options['propertiesMap'])) {
