@@ -52,7 +52,7 @@ class RequestBodyParamConverter implements ParamConverterInterface
         $options = (array)$configuration->getOptions();
 
         switch(true) {
-            case $request->headers->get('Content-Type') == 'application/json':
+            case strpos($request->headers->get('Content-Type'), 'application/json') === 0:
                 //This allow a empty body to be consider as '{}'
                 if (is_null($requestData = json_decode($request->getContent(), true))) {
                     $requestData = [];
