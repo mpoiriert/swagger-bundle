@@ -2,7 +2,9 @@
 
 namespace Draw\SwaggerBundle\DependencyInjection;
 
+use Doctrine\Bundle\DoctrineBundle\DoctrineBundle;
 use Draw\DrawBundle\Config\Definition\Builder\AllowExtraPropertiesNodeBuilder;
+use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
@@ -37,12 +39,7 @@ class Configuration implements ConfigurationInterface
             ->booleanNode('cleanOnDump')
                 ->defaultTrue()
             ->end()
-            ->booleanNode('enableFosRestSupport')
-                ->defaultNull()
-            ->end()
-            ->booleanNode('enableDoctrineSupport')
-                ->defaultNull()
-            ->end()
+            ->append($this->createDoctrineNode())
             ->booleanNode('convertQueryParameterToAttribute')
                 ->defaultFalse()
             ->end()
@@ -78,7 +75,7 @@ class Configuration implements ConfigurationInterface
             ->end()
             ->arrayNode('definitionAliases')
                 ->defaultValue(array())
-                ->prototype("array")
+                ->arrayPrototype()
                     ->children()
                         ->scalarNode("class")->isRequired()->end()
                         ->scalarNode("alias")->isRequired()->end()
@@ -105,5 +102,11 @@ class Configuration implements ConfigurationInterface
         ->end();
 
         return $treeBuilder;
+    }
+
+    private function createDoctrineNode(): ArrayNodeDefinition
+    {
+        return (new ArrayNodeDefinition('doctrine'))
+            ->{class_exists(DoctrineBundle::class) ? 'canBeDisabled' : 'canBeEnabled'}();
     }
 }

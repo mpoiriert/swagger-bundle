@@ -1,18 +1,17 @@
 <?php namespace Draw\SwaggerBundle\DependencyInjection;
 
 use Draw\Swagger\Extraction\Extractor\JmsSerializer\TypeToSchemaHandlerInterface;
+use Draw\Swagger\Extraction\Extractor\TypeSchemaExtractor;
+use Draw\Swagger\Extraction\ExtractorInterface;
 use Draw\Swagger\Swagger;
-use Draw\SwaggerBundle\Extractor\JmsSerializer\ReferenceTypeToSchemaHandler;
 use Draw\SwaggerBundle\Listener\ResponseConverterSubscriber;
 use Draw\SwaggerBundle\Request\DeserializeBody;
 use Draw\SwaggerBundle\Request\RequestBodyParamConverter;
-use RuntimeException;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
-use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
-use Symfony\Component\DependencyInjection\Reference;
+use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 use Symfony\Component\HttpKernel\DependencyInjection\ConfigurableExtension;
 
 class DrawSwaggerExtension extends ConfigurableExtension
@@ -25,30 +24,29 @@ class DrawSwaggerExtension extends ConfigurableExtension
     public function loadInternal(array $config, ContainerBuilder $container)
     {
         $container
+            ->registerForAutoconfiguration(ExtractorInterface::class)
+            ->addTag('swagger.extractor');
+
+        $container
             ->registerForAutoconfiguration(TypeToSchemaHandlerInterface::class)
             ->addTag('swagger.jms_type_handler');
 
         $container->setParameter("draw_swagger.schema", $config['schema']);
-
-        $fileLocator = new FileLocator(__DIR__ . '/../Resources/config');
-        $loader = new YamlFileLoader($container, $fileLocator);
-
-        // The order that extractor get registered is important so th fos_rest.yml must be loaded first
-        $this->loadConditionalBundleFile(
-            $config,
-            $container,
-            'FOSRestBundle',
-            $loader,
-            'fos_rest.yaml',
-            'enableFosRestSupport'
+        $container->setParameter(
+            'draw_swagger.dir',
+            dirname((new \ReflectionClass(Swagger::class))->getFileName())
         );
 
-        $loader->load('swagger.yaml');
+        $fileLocator = new FileLocator(__DIR__ . '/../Resources/config');
+        $loader = new XmlFileLoader($container, $fileLocator);
 
-        $container->getDefinition(Swagger::class)
+        $loader->load('swagger.xml');
+
+        $container
+            ->getDefinition(Swagger::class)
             ->addMethodCall('setCleanOnDump', [$config['cleanOnDump']]);
 
-        $definition = $container->getDefinition("draw.swagger.extractor.type_schema_extractor");
+        $definition = $container->getDefinition(TypeSchemaExtractor::class);
 
         foreach ($config['definitionAliases'] as $alias) {
             $definition->addMethodCall(
@@ -57,27 +55,14 @@ class DrawSwaggerExtension extends ConfigurableExtension
             );
         }
 
-        $doctrineSupportEnabled = $this->loadConditionalBundleFile(
-            $config,
-            $container,
-            'DoctrineBundle',
-            $loader,
-            'doctrine.yaml',
-            'enableDoctrineSupport'
-        );
-
-        if ($doctrineSupportEnabled) {
-            $container
-                ->getDefinition('draw.swagger.extractor.jms_extractor')
-                ->addMethodCall('registerTypeToSchemaHandler', [new Reference(ReferenceTypeToSchemaHandler::class)]);
-        }
+        $this->configDoctrine($config['doctrine'], $loader, $container);
 
         if($config['convertQueryParameterToAttribute']) {
-            $loader->load('query_parameter_fetcher.yaml');
+            $loader->load('query_parameter_fetcher.xml');
         }
 
         if ($config['responseConverter']['enabled']) {
-            $loader->load('response_converter.yaml');
+            $loader->load('response_converter.xml');
             $container
                 ->getDefinition(ResponseConverterSubscriber::class)
                 ->setArgument('$serializeNull', $config['responseConverter']['serializeNull']);
@@ -94,32 +79,12 @@ class DrawSwaggerExtension extends ConfigurableExtension
             );
     }
 
-    private function loadConditionalBundleFile(
-        $config,
-        ContainerBuilder $container,
-        $bundleName,
-        LoaderInterface $loader,
-        $file,
-        $configurationName
-    ) {
-        $bundles = $container->getParameter('kernel.bundles');
-        switch (true) {
-            case is_null($config['enableFosRestSupport']) && isset($bundles[$bundleName]):
-            case $config[$configurationName]:
-                if (!isset($bundles[$bundleName])) {
-                    throw new RuntimeException(
-                        sprintf(
-                            '%s is not enabled while draw_swagger.%s is set to true. Remove draw_swagger.%s node or set it to false',
-                            $bundleName,
-                            $configurationName,
-                            $configurationName
-                        )
-                    );
-                }
-                $loader->load($file);
-                return true;
+    private function configDoctrine(array $config, LoaderInterface $loader, ContainerBuilder $container)
+    {
+        if (!$config['enabled']) {
+            return;
         }
 
-        return false;
+        $loader->load('doctrine.xml');
     }
 }

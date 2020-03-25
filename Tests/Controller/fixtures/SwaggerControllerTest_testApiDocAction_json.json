@@ -5,44 +5,6 @@
     "version": "1.0"
   },
   "paths": {
-    "\/tests\/{id}": {
-      "get": {
-        "tags": [
-          "Test"
-        ],
-        "operationId": "draw_swagger_tests_mock_test_get",
-        "parameters": [
-          {
-            "type": "string",
-            "name": "id",
-            "description": "Php doc description",
-            "in": "path",
-            "required": true
-          },
-          {
-            "type": "string",
-            "name": "filter",
-            "description": "fos description",
-            "in": "query"
-          },
-          {
-            "in": "body",
-            "name": "body",
-            "schema": {
-              "$ref": "#\/definitions\/Draw.SwaggerBundle.Tests.Mock.Model.Test"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "The loaded test entity",
-            "schema": {
-              "$ref": "#\/definitions\/Draw.SwaggerBundle.Tests.Mock.Model.Test"
-            }
-          }
-        }
-      }
-    },
     "\/tests": {
       "post": {
         "tags": [

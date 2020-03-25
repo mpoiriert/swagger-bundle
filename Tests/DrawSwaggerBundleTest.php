@@ -9,7 +9,7 @@ class DrawSwaggerBundleTest extends TestCase
 
     public function testGetService()
     {
-        $swagger = static::createClient()->getContainer()->get("draw.swagger");
+        $swagger = static::createClient()->getContainer()->get(Swagger::class);
 
         $this->assertInstanceOf(Swagger::class, $swagger);
 

@@ -106,7 +106,7 @@ class ParamConverterExtractor implements ExtractorInterface
             return $options['deserializationContext']['groups'];
         }
 
-        return  [GroupsExclusionStrategy::DEFAULT_GROUP];
+        return [GroupsExclusionStrategy::DEFAULT_GROUP];
     }
 
     private function getValidationGroups(ParamConverter $paramConverter)
@@ -132,12 +132,12 @@ class ParamConverterExtractor implements ExtractorInterface
                     return false;
                 }
 
-                if(!in_array($converter->getConverter(), ["fos_rest.request_body", "draw.request_body"])) {
+                if ($converter->getConverter() != "draw.request_body") {
                     return false;
                 }
 
                 $options = $converter->getOptions();
-                if(isset($options['swagger']['disable']) && $options['swagger']['disable']) {
+                if (isset($options['swagger']['disable']) && $options['swagger']['disable']) {
                     return false;
                 }
 

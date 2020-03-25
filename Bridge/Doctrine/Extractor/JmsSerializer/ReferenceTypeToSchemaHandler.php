@@ -1,6 +1,6 @@
-<?php namespace Draw\SwaggerBundle\Extractor\JmsSerializer;
+<?php namespace Draw\SwaggerBundle\Bridge\Doctrine\Extractor\JmsSerializer;
 
-use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\Persistence\ManagerRegistry;
 use Draw\Swagger\Extraction\ExtractionContextInterface;
 use Draw\Swagger\Extraction\Extractor\JmsSerializer\TypeToSchemaHandlerInterface;
 use Draw\Swagger\Schema\Schema;

@@ -5,7 +5,6 @@ namespace Draw\SwaggerBundle\DependencyInjection\Compiler;
 use Draw\Swagger\Swagger;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\DefinitionDecorator;
 use Symfony\Component\DependencyInjection\Reference;
 
 class ExtractorCompilerPass implements CompilerPassInterface
@@ -27,19 +26,7 @@ class ExtractorCompilerPass implements CompilerPassInterface
                 continue;
             }
 
-            $swagger->addMethodCall("registerExtractor", array(new Reference($id)));
-        }
-
-        foreach ($container->getDefinitions() as $id => $definition) {
-            if (!$definition instanceof DefinitionDecorator) {
-                continue;
-            }
-
-            if ($definition->getParent() != "draw.swagger.extractor.constraint_extractor") {
-                continue;
-            }
-
-            $swagger->addMethodCall("registerExtractor", array(new Reference($id)));
+            $swagger->addMethodCall("registerExtractor", [new Reference($id)]);
         }
     }
 }

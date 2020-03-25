@@ -1,6 +1,6 @@
-<?php namespace Draw\SwaggerBundle\Listener;
+<?php namespace Draw\SwaggerBundle\Bridge\Doctrine\Serializer;
 
-use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\Persistence\ManagerRegistry;
 use JMS\Serializer\Context;
 use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\GraphNavigatorInterface;
