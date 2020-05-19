@@ -1,8 +1,5 @@
 FROM php:7.2.17-fpm
 
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends openssh-server
-
 COPY php.ini /usr/local/etc/php/php.ini
 COPY php.ini /etc/php/7.2.3/php.ini
 COPY php-fpm-pool.conf /etc/php/7.2.3/pool.d/www.conf
@@ -38,9 +35,3 @@ RUN apt-get install -y --no-install-recommends git zip unzip
 RUN rm -rf /var/lib/apt/lists/*
 
 WORKDIR /home/wwwroot/
-
-EXPOSE 9000
-
-ADD run.sh /usr/local/bin/run.sh
-
-CMD ["/usr/local/bin/run.sh"]
