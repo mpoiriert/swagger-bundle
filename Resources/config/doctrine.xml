@@ -7,5 +7,6 @@
     <services>
         <defaults public="false" autoconfigure="true" autowire="true" />
         <prototype namespace="Draw\SwaggerBundle\Bridge\Doctrine\" resource="../../Bridge/Doctrine" />
+        <service id="Draw\Swagger\Extraction\Extractor\DoctrineInheritanceExtractor" />
     </services>
 </container>
